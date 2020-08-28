@@ -1,3 +1,4 @@
+# Decorator pattern
 from abc import ABC, abstractclassmethod
 
 

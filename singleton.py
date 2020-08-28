@@ -1,4 +1,8 @@
+# singleton pattern
+
 # https://stackoverflow.com/questions/6760685/creating-a-singleton-in-python
+
+
 class Singleton():
     _instance = None
 

@@ -1,5 +1,8 @@
+# command pattern
+
 from abc import ABC, abstractmethod
 from enum import Enum
+from typing import List
 
 
 class Command(ABC):
@@ -34,6 +37,29 @@ class OffCommand(Command):
 
     def undo(self):
         pass
+
+
+class MacroCommand(Command):
+    def __init__(self, commands: List[Command]):
+        self._commands = commands
+
+    def execute(self):
+        for command in self._commands:
+            command.execute()
+
+    def undo(self):
+        for command in self._commands:
+            command.undo()
+
+
+class MacroOnCommand(MacroCommand):
+    def __init__(self, commands: List[OnCommand]):
+        self._commands = commands
+
+
+class MacroOffCommand(MacroCommand):
+    def __init__(self, commands: List[OffCommand]):
+        self._commands = commands
 
 
 class Appliance(ABC):
@@ -195,6 +221,18 @@ if __name__ == "__main__":
     fan1_command = CeilingFanCommand(fan1)
     fan2_command = CeilingFanCommand(fan2)
 
+    macro_on_command = MacroOnCommand([light1_on_command,
+                                       light2_on_command,
+                                       door1_up_command,
+                                       door2_up_command,
+                                       ])
+
+    macro_off_command = MacroOffCommand([light1_off_command,
+                                         light2_off_command,
+                                         door1_down_command,
+                                         door2_down_command
+                                         ])
+
     remote_control = RemoteControl()
 
     remote_control.set_command(0, light1_on_command, light1_off_command)
@@ -206,12 +244,16 @@ if __name__ == "__main__":
     remote_control.set_command(4, fan1_command, NoCommand())
     remote_control.set_command(5, fan2_command, NoCommand())
 
-    # next line will fail
-    remote_control.set_command(7, door2_up_command, door2_down_command)
+    remote_control.set_command(6, macro_on_command, macro_off_command)
 
-    for i in range(6):
-        remote_control.press_on_button(4)
+    # for i in range(6):
+    #     remote_control.press_on_button(4)
+    # remote_control.press_undo_button()
+    remote_control.press_on_button(6)
+    remote_control.press_off_button(6)
     remote_control.press_undo_button()
+
+
 
 '''
 Encapsulate classes with a command class and pass command object to client

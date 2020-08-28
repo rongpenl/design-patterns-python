@@ -1,11 +1,12 @@
-from abc import ABC, abstractclassmethod
+# observer pattern
+from abc import ABC, abstractmethod
 
 
 class Observer(ABC):
     def __init__(self):
         pass
 
-    @abstractclassmethod
+    @abstractmethod
     def update(self, temperature: float, humidity: float, pressure: float):
         pass
 
@@ -14,7 +15,7 @@ class Display(ABC):
     def __init__(self):
         pass
 
-    @abstractclassmethod
+    @abstractmethod
     def display(self):
         pass
 
@@ -23,15 +24,15 @@ class Subject(ABC):
     def __init__(self):
         pass
 
-    @abstractclassmethod
+    @abstractmethod
     def register_observer(self, observer: Observer):
         pass
 
-    @abstractclassmethod
+    @abstractmethod
     def remove_observer(self, observer: Observer):
         pass
 
-    @abstractclassmethod
+    @abstractmethod
     def notify_observer(self):
         pass
 

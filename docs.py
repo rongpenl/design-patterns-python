@@ -1,3 +1,5 @@
+# factory pattern and abstract pattern
+
 from abc import ABC, abstractmethod
 
 '''
