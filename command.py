@@ -3,6 +3,7 @@
 from abc import ABC, abstractmethod
 from enum import Enum
 from typing import List
+from random import randint
 
 
 class Command(ABC):
@@ -151,8 +152,12 @@ class CeilingFan(Appliance):
         val = self._speed.value
         new_val = (val + direction) % len(self.SPEED)
         self._speed = self.SPEED(new_val)
-        print("Changing speed from {} to {}".format(
-            self.SPEED(val), self.SPEED(new_val)))
+        print("Changing {} fan speed from {} to {}".format(self._description,
+                                                           self.SPEED(val),
+                                                           self.SPEED(new_val
+                                                                      )
+                                                           )
+              )
 
 
 class CeilingFanCommand(Command):
@@ -173,7 +178,7 @@ class RemoteControl():
         self.num_slot = 7
         self.on_commands = [NoCommand() for _ in range(self.num_slot)]
         self.off_commands = [NoCommand() for _ in range(self.num_slot)]
-        self.undo_command = NoCommand()
+        self.undo_commands = []
 
     def set_command(self, slot: int, on_command: OnCommand,
                     off_command: OffCommand):
@@ -185,14 +190,18 @@ class RemoteControl():
 
     def press_on_button(self, slot: int):
         self.on_commands[slot].execute()
-        self.undo_command = self.on_commands[slot]
+        self.undo_commands.append(self.on_commands[slot])
 
     def press_off_button(self, slot: int):
         self.off_commands[slot].execute()
-        self.undo_command = self.off_commands[slot]
+        self.undo_commands.append(self.off_commands[slot])
 
     def press_undo_button(self):
-        self.undo_command.undo()
+        try:
+            undo_command = self.undo_commands.pop()
+            undo_command.undo()
+        except IndexError:
+            print("Reached the end of command history")
 
     def __repr__(self):
         return "Remote control"
@@ -246,13 +255,15 @@ if __name__ == "__main__":
 
     remote_control.set_command(6, macro_on_command, macro_off_command)
 
-    # for i in range(6):
-    #     remote_control.press_on_button(4)
-    # remote_control.press_undo_button()
-    remote_control.press_on_button(6)
-    remote_control.press_off_button(6)
     remote_control.press_undo_button()
+    for i in range(2):
+        remote_control.press_on_button(randint(0, 6))
 
+    for i in range(2):
+        remote_control.press_undo_button()
+
+    # remote_control.press_on_button(6)
+    # remote_control.press_off_button(6)
 
 
 '''
