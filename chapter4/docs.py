@@ -1,4 +1,4 @@
-# factory pattern and abstract pattern
+# factory pattern and abstract factory pattern
 
 from abc import ABC, abstractmethod
 
